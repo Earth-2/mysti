@@ -3,10 +3,11 @@
 #include <dirent.h>
 #include <string.h>
 
+int dos(int height, int width);
 int dosselector(const struct dirent *entry);
 int isexec(char *p);
 
-int dos(void)
+int dos(winh, winw)
 {
     struct dirent **namelist = malloc(sizeof(struct dirent));
 
@@ -29,7 +30,7 @@ int dos(void)
 
         //handy command for scanning directory and sorting the entries alphabetically
         if((nent = scandir(path, &namelist, dosselector, alphasort)) == -1) {
-            mvwprintw(welcomewin, 1, 2, "Error scanning directory");
+            mvwprintw(mainwin, 1, 2, "Error scanning directory");
             return 1;
         }
 
@@ -37,9 +38,9 @@ int dos(void)
         for(i=0; i<nent; i++)
             choices[i] = namelist[i]->d_name;      
 
-        wrefresh(welcomewin);
+        wrefresh(mainwin);
         if(ARRAY_SIZE(choices) == 0) {
-            mvwprintw(welcomewin, 1, 2, "ERROR: directory empty");
+            mvwprintw(mainwin, 1, 2, "ERROR: directory empty");
             return 1;
         }
 
@@ -53,21 +54,21 @@ int dos(void)
         
         //don't show menu description
         menu_opts_off(dosmenu, O_SHOWDESC);
-        set_menu_win(dosmenu, welcomewin);
-        set_menu_sub(dosmenu, derwin(welcomewin, 
-                                     30, 126, 2, 2));
-    //                                 welcomewinh-8, welcomewinw-8, welcomewinh/2-4, welcomewinw/2-4));
+        set_menu_win(dosmenu, mainwin);
+        set_menu_sub(dosmenu, derwin(mainwin, 
+    //                                 30, 126, 2, 2));
+                                    winh-6, winw-6, 3, 3));
         set_menu_format(dosmenu, 22, 3);
         set_menu_mark(dosmenu, " > ");
         
         post_menu(dosmenu);
-        wrefresh(welcomewin);
+        wrefresh(mainwin);
         
-        keypad(welcomewin, TRUE);
+        keypad(mainwin, TRUE);
     
         //input loop    
 	    do {   
-	        c = wgetch(welcomewin);    
+	        c = wgetch(mainwin);    
 	        switch(c) {	
 	            case KEY_DOWN:
 				    menu_driver(dosmenu, REQ_DOWN_ITEM);
@@ -128,7 +129,7 @@ int dos(void)
                     free_menu(dosmenu);
 		            return 0;
 		    }
-                    wrefresh(welcomewin);
+                    wrefresh(mainwin);
 	    } while(c != 10);
 
         unpost_menu(dosmenu);
@@ -162,3 +163,4 @@ int isexec(char *p)
     else
         return 0;
 }
+
