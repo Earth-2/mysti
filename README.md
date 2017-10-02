@@ -1,2 +1,6 @@
 # mysti
 For launching desktop environments and certain programs directly from shell with ease
+
+Named after the cat I grew up with, this program was designed to launch both terminal-based and X-based programs through a Curses-style shell interface.  When finished, I intend for the menu items to be easily modifiable through an XML or similarly formatted config file; contain a pretty title box, which can also be customized; allow for opening a shell prompt during execution; and perhaps some other bells and whistles, like little system monitor boxes alongside the menu.
+
+The interface in the master branch was my original conception.  I'm working on a differently configured interface, with a single main window at the center rather than a menu, monitor, and "action" window as originally imagined.  It currently successfully launches desktop environments and selected applications through startx, though the menu items are still hard-coded into a header file.  There is a separate "DOS games" option under Games which is designed specifically for finding and running DOS executables via DOSBox.  I will add a similar launcher for Doom WADs, because Doom is my favorite game and I think it would be cool.
