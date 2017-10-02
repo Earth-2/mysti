@@ -15,10 +15,12 @@
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
-WINDOW *menuwin;
-WINDOW *welcomewin;
+WINDOW *mainwin;
+//WINDOW *welcomewin;
 WINDOW *statbarwin;
-WINDOW *monitorwin;
+//WINDOW *monitorwin;
+
+
 
 int running = 1;
 
@@ -48,7 +50,7 @@ void statbar(void);
 //void statbar(WINDOW **localwin);
 char *inttostr(int n);
 
-// WINDOW *menuwin;
+// WINDOW *mainwin;
 // WINDOW *welcomewin;
 // WINDOW *statbarwin;
 
@@ -101,6 +103,9 @@ Entry envlist[] = {
                     "Icy Openbox config",
 //                                   {"cp ~/.config/openbox/autostarts/autostart-lite ~/.config/openbox/autostart",
                                     {"startx /usr/bin/openbox --startup ~/.config/openbox/autostart-lite --config-file ~/.config/openbox/rc-lite.xml -- -dpi 192"}},
+//                   {"OB Win95",
+//                    "Openbox like Windows 95",
+//                                    {"startx /usr/bin/openbox --startup ~/.config/openbox/autostart-win95 --config-file ~/.config/openbox/rc-win95.xml -- -dpi 192"}},
                    {"i3",
                     "Tiled window manager",
                                    {"startx /usr/bin/i3 -- -dpi 192"}},
@@ -111,19 +116,23 @@ Entry envlist[] = {
                     "Main Menu",
                                    {"0"}},
                    {(char *)NULL, (char *)NULL, {(char *)NULL}},
+                   {(char *)NULL, (char *)NULL, {(char *)NULL}},
                   };
 
 Entry browslist[] = {
-                        {"Chromium",
-                         "Open-source version of Chrome",
-                                   {"startx /usr/bin/chromium -- -dpi 192"}},
+//                        {"Chromium",
+//                         "Open-source version of Chrome",
+//                                   {"startx /usr/bin/chromium --window-size=2736,1824 -- -dpi 192"}},
                         {"YouTube",
                          "YouTube kiosk",
-                                   {"startx /usr/bin/chromium www.youtube.com --kiosk --user-data-dir=/home/keegan/.config/chromium-yt"}},
-                        {"Midori",
-                         "Lightweight and fast",
-                                   {"exec --no-startup-id /usr/lib64/gnome-settings-daemon/gnome-settings-daemon &",
-                                    "startx /usr/bin/midori -- -dpi 192"}},
+                                   {"startx /usr/bin/chromium www.youtube.com --kiosk --window-size=2736,1824 --user-data-dir=/home/keegan/.config/chromium-yt"}},
+                        {"Nylas",
+                         "Email client",
+                                   {"startx /usr/bin/nylas -- -dpi 192"}},
+//                        {"Midori",
+//                         "Lightweight and fast",
+//                                   {"exec --no-startup-id /usr/lib64/gnome-settings-daemon/gnome-settings-daemon &",
+//                                    "startx /usr/bin/midori -- -dpi 192"}},
                         {"eLinks",
                          "Terminal-based web browser",
                                    {"elinks"}},
@@ -165,6 +174,13 @@ Entry medialist[] = {
                     };
 
 Entry misclist[] = {
+                        {"Calibre",
+                         "E-reader",
+                                   {"startx /usr/bin/calibre -- -dpi 192"}},
+
+                        {"Nyancat",
+                         "That pop tart cat",
+                                   {"nyancat"}},
                         {"<--",
                          "Main Menu",
                                    {"0"}},
@@ -315,5 +331,6 @@ Entry *list[] = {
                     },
                 };
 */
+
 
 
