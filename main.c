@@ -12,7 +12,6 @@ int main(void)
     int c;
     int i, j;
     int nmenus;
-    
     int cursy;
     int cursx;
 
@@ -36,6 +35,7 @@ int main(void)
         menus[i].title  = title[i];
     }
 
+
     //start curses mode
     initscr();
     start_color();
@@ -44,10 +44,11 @@ int main(void)
     keypad(stdscr, TRUE);
     curs_set(0);
 
+
     //init color pairs
     init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(2, COLOR_WHITE, COLOR_BLACK);
-    init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+    init_pair(3, COLOR_YELLOW, COLOR_RED);
     init_pair(4, COLOR_RED, COLOR_BLACK);
     init_pair(5, COLOR_BLUE, COLOR_BLACK);
     init_pair(6, COLOR_GREEN, COLOR_BLACK);
@@ -59,47 +60,47 @@ int main(void)
     const int BLUE = COLOR_PAIR(5);
     const int GREEN = COLOR_PAIR(6);
  
-    const int menwinw = COLS/2;
-    const int menwinh = LINES/2-7;
+    const int mainwinw = COLS/2;
+    const int mainwinh = LINES/2;
     
-    const int welcomewinw = COLS;
-    const int welcomewinh = LINES/2 + 5;    
+    //const int welcomewinw = COLS;
+    //const int welcomewinh = LINES/2 + 5;    
 
     //create windows
-    menuwin = createwin(menwinh, menwinw, LINES/2+6, 0, title[MAIN], YELLOW);
-    welcomewin = createwin(welcomewinh, welcomewinw, 0, 0, "Welcome to Arch Linux!", MAGENTA);
-    monitorwin = createwin(LINES/2-7, COLS/2, LINES/2+6, COLS/2 + 1, "System Monitor", RED);
+    mainwin = createwin(mainwinh, mainwinw, LINES/2-mainwinh/4, COLS/2-mainwinw/2, title[MAIN], WHITE);
+//    welcomewin = createwin(welcomewinh, welcomewinw, 0, 0, "Welcome to Arch Linux!", MAGENTA);
+//    monitorwin = createwin(LINES/2-7, COLS/2, LINES/2+6, COLS/2 + 1, "System Monitor", RED);
 
 
     statbarwin = newwin(1, COLS, LINES-1, 0);
     //statbar(&statbarwin);
     statbar();
 
-    keypad(menuwin, TRUE);
+    keypad(mainwin, TRUE);
 
     //set up the actual menu objects
     nmenus = ARRAY_SIZE(menus);
     for(i=0; i<nmenus; i++) {
         *(menus[i].menu) = initmenu(menus[i].items, menus[i].list, menus[i].len);
-        set_menu_win(*(menus[i].menu), menuwin);
-        set_menu_sub(*(menus[i].menu), derwin(menuwin, 10, 50, menwinh/2-5, menwinw/2-25));
+        set_menu_win(*(menus[i].menu), mainwin);
+        set_menu_sub(*(menus[i].menu), derwin(mainwin, 15, 50, mainwinh/2-5, mainwinw/2-25));
     }
 
     currentmenu = *(menus[MAIN].menu);
 //    currenttitle = title[MAIN];
     post_menu(currentmenu);
 
-    wmove(welcomewin, 1, 1);
+    //wmove(welcomewin, 1, 1);
     //system("linux_logo -L 10");
 
-    drawwin(menuwin, title[MAIN], COLOR_PAIR(3));
-    drawwin(welcomewin, "Welcome to Arch Linux!", MAGENTA);
-    drawwin(monitorwin, "System Monitor", RED);
+    drawwin(mainwin, title[MAIN], YELLOW);
+    //drawwin(welcomewin, "Welcome to Arch Linux!", MAGENTA);
+    //drawwin(monitorwin, "System Monitor", RED);
 
-    nodelay(menuwin, 1);
+    nodelay(mainwin, 1);
 
     //input loop
-    while((c = wgetch(menuwin)) != KEY_F(4)) {
+    while((c = wgetch(mainwin)) != KEY_F(4)) {
         //statbar(&statbarwin);   //refresh statbar
         statbar();
 
@@ -122,7 +123,7 @@ int main(void)
                 pos_menu_cursor(currentmenu);
             }
             break;
-        case 'x':
+/*        case 'x':
             echo();
             curs_set(2);
             {
@@ -208,7 +209,7 @@ int main(void)
             curs_set(0);
             pos_menu_cursor(currentmenu);
             break;
-
+*/
         case '.':                   //raise brightness
             system("light -A 5");
             break;
@@ -229,10 +230,11 @@ int main(void)
             case DOS:
                 /*mvwprintw(monitorwin, 2, 2, "Mousie");
                 wrefresh(monitorwin);*/
-                select = dos();
+                unpost_menu(currentmenu);
+                select = dos(mainwinh, mainwinw);
                 pos_menu_cursor(currentmenu);
-                wclear(welcomewin);
-                drawwin(welcomewin, "Arch Linux", MAGENTA);
+                //wclear(welcomewin);
+                //drawwin(welcomewin, "Arch Linux", MAGENTA);
                 /*mvwprintw(monitorwin, 2, 2, "New mousie");
                 wrefresh(monitorwin);*/
                 break;
@@ -244,7 +246,7 @@ int main(void)
             }
             post_menu(currentmenu);
         }
-//        drawwin(menuwin, menus[select].title, COLOR_PAIR(3));
+//        drawwin(mainwin, menus[select].title, COLOR_PAIR(3));
         if(select == -1) {
             //char prog[255];
             //*prog = *(menus[select].title);
@@ -253,7 +255,7 @@ int main(void)
             //wrefresh(welcomewin);
             char *title = "Execution complete";
             //sprintf(title, "Execution of %s complete.", prog);
-            drawwin(welcomewin, title, MAGENTA);
+            //drawwin(welcomewin, title, MAGENTA);
         }
     }
 
@@ -268,8 +270,8 @@ quit:
     }
 
 
-    delwin(menuwin);
-    delwin(welcomewin);
+    delwin(mainwin);
+    //delwin(welcomewin);
     delwin(statbarwin);
 
     clear();
@@ -302,8 +304,8 @@ void drawwin(WINDOW *win, char *title, int color)
 {
     wattron(win, color);
     //wborder(win, 186, 186, 205, 205, 201, 187, 200, 188);
-    //wborder(win, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
-    wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
+    wborder(win, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD, ACS_CKBOARD);
+    //wborder(win, '|', '|', '-', '-', '+', '+', '+', '+');
 
     wattron(win, COLOR_PAIR(2));
     mvwprintw(win, 0, 4, "%s", title);
